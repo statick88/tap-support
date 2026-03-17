@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TikTok Tap Support - Herramienta de Contador de Taps</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-bg: #0a0e1a;
+            --color-bg-hover: #1b243d;
+            --color-text: #ffffff;
+            --color-text-secondary: #b8b8b8;
+            --color-border: #2a2a2a;
+            --color-accent: #4c80cc;
+            --color-coral: #ff6b6b;
+            --color-teal: #4ecdc4;
+            --color-mint: #95e1d3;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--color-bg);
+            color: var(--color-text);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Hero Section */
+        .hero {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+            padding: 4rem 0;
+            min-height: 80vh;
+        }
+
+        .hero-content {
+            order: 1;
+        }
+
+        .hero-visual {
+            order: 2;
+        }
+
+        .badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ff8e53 100%);
+            color: white;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #ff6b6b 0%, #4ecdc4 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .tagline {
+            font-size: 1.25rem;
+            color: var(--color-text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .cta-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--color-accent);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(76, 128, 204, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--color-bg-hover);
+            color: var(--color-text);
+            border: 1px solid var(--color-border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--color-border);
+        }
+
+        /* Terminal */
+        .terminal {
+            background: #1a1a2e;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .terminal-header {
+            background: #2a2a4a;
+            padding: 0.75rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .terminal-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .terminal-buttons span {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .close { background: #ff5f57; }
+        .minimize { background: #ffbd2e; }
+        .maximize { background: #28ca42; }
+
+        .terminal-title {
+            color: #888;
+            font-size: 0.85rem;
+        }
+
+        .terminal-body {
+            padding: 1.5rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem;
+            line-height: 1.4;
+            overflow-x: auto;
+        }
+
+        .prompt {
+            color: var(--color-teal);
+        }
+
+        /* Sections */
+        section {
+            padding: 4rem 0;
+        }
+
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        /* Features Grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .feature-card {
+            background: var(--color-bg-hover);
+            border: 1px solid var(--color-border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: transform 0.2s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-card p {
+            font-size: 0.9rem;
+            color: var(--color-text-secondary);
+        }
+
+        /* Tech Stack */
+        .tech-items {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+
+        .tech-tag {
+            background: var(--color-bg-hover);
+            border: 1px solid var(--color-border);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Code Block */
+        .code-block {
+            background: #1a1a2e;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            overflow-x: auto;
+        }
+
+        .code-block pre {
+            margin: 0;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: #ccc;
+        }
+
+        .comment {
+            color: #6a9955;
+        }
+
+        /* Controls Table */
+        .controls-table {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .control-row {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        kbd {
+            background: var(--color-bg-hover);
+            border: 1px solid var(--color-border);
+            border-radius: 6px;
+            padding: 0.3rem 0.8rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        /* Parallel Section */
+        .parallel-demo {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .instance-card {
+            background: var(--color-bg-hover);
+            border: 1px solid var(--color-border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            position: relative;
+        }
+
+        .instance-card::before {
+            content: attr(data-instance);
+            position: absolute;
+            top: -10px;
+            right: 20px;
+            background: var(--color-accent);
+            color: white;
+            padding: 0.2rem 0.8rem;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .instance-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-teal);
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--color-text-secondary);
+        }
+
+        /* Footer */
+        .footer-cta {
+            text-align: center;
+            padding: 4rem 0;
+            background: linear-gradient(to bottom, transparent, var(--color-bg-hover));
+            border-radius: 12px;
+            margin-top: 2rem;
+        }
+
+        .footer-cta p {
+            margin-bottom: 2rem;
+            color: var(--color-text-secondary);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .hero-content {
+                order: 2;
+            }
+
+            .hero-visual {
+                order: 1;
+            }
+
+            .cta-group {
+                justify-content: center;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .terminal-body {
+                font-size: 0.5rem;
+            }
+        }
+
+        /* Footer Branding */
+        .footer-branding {
+            text-align: center;
+            padding: 2rem;
+            color: var(--color-text-secondary);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--color-border);
+            margin-top: 4rem;
+        }
+
+        .footer-branding a {
+            color: var(--color-accent);
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Hero -->
+        <section class="hero">
+            <div class="hero-content">
+                <div class="badge">🎵 Nueva Herramienta</div>
+                <h1>TikTok Tap Support</h1>
+                <p class="tagline">Contador de taps en tiempo real para directos de TikTok con soporte multi-instancia</p>
+                
+                <div class="cta-group">
+                    <a href="https://github.com/statick88/tap-support" class="btn btn-primary" target="_blank">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
+                        Ver en GitHub
+                    </a>
+                    <a href="#features" class="btn btn-secondary">Características</a>
+                </div>
+            </div>
+            
+            <div class="hero-visual">
+                <div class="terminal">
+                    <div class="terminal-header">
+                        <div class="terminal-buttons">
+                            <span class="close"></span>
+                            <span class="minimize"></span>
+                            <span class="maximize"></span>
+                        </div>
+                        <span class="terminal-title">tap-support</span>
+                    </div>
+                    <div class="terminal-body">
+<pre><code><span class="prompt">$</span> ./run-multi.sh -i cuenta1 -r 10 cuenta1
+
+╔══════════════════════════════════════════════════════════════╗
+║  TikTok Tap Counter (⚡ 10/s)                                ║
+╠══════════════════════════════════════════════════════════════╣
+║                                                              ║
+║                         5,678                                ║
+║                                                              ║
+║                    600 taps/min                              ║
+║                                                              ║
+║                    ⏱️ 00:09:28                              ║
+║                                                              ║
+║                    User: cuenta1                              ║
+║                                                              ║
+╠══════════════════════════════════════════════════════════════╣
+║  [Space] Toggle | [s] Stop | [r] Reset | [q] Quit          ║
+╚══════════════════════════════════════════════════════════════╝</code></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features -->
+        <section id="features">
+            <h2>Características</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Auto-Tapping Configurable</h3>
+                    <p>Velocidad adjustable de 1-100 taps por segundo. Control total sobre la tasa de taps.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔄</div>
+                    <h3>Ejecución Multi-Instancia</h3>
+                    <p>Ejecuta múltiples instancias en paralelo. Cada una con su propio almacenamiento y configuración.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Métricas en Tiempo Real</h3>
+                    <p>Visualiza taps/min, duración y estadísticas de sesión actualizadas en vivo.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">👤</div>
+                    <h3>Cambio de Usuario</h3>
+                    <p>Switch Easily entre diferentes usernames de TikTok sin perder datos.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📜</div>
+                    <h3>Historial de Sesiones</h3>
+                    <p>Guarda y revisa sesiones anteriores con análisis detallado por instancia.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎨</div>
+                    <h3>UI Moderna TUI</h3>
+                    <p>Hermosa interfaz de terminal con Lipgloss y tema oscuro integrado.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tech Stack -->
+        <section class="tech-stack">
+            <h2>Tecnologías</h2>
+            <div class="tech-items">
+                <span class="tech-tag">Go 1.24</span>
+                <span class="tech-tag">Bubble Tea</span>
+                <span class="tech-tag">Lipgloss</span>
+                <span class="tech-tag">Clean Architecture</span>
+                <span class="tech-tag">Docker</span>
+                <span class="tech-tag">GitHub Actions</span>
+            </div>
+        </section>
+
+        <!-- Parallel Execution Demo -->
+        <section>
+            <h2>Ejecución en Paralelo</h2>
+            <p style="text-align: center; color: var(--color-text-secondary); margin-bottom: 2rem;">
+                Ejecuta múltiples cuentas simultáneamente en diferentes terminales
+            </p>
+            
+            <div class="parallel-demo">
+                <div class="instance-card" data-instance="CUENTA 1">
+                    <h3>📱 cuenta1</h3>
+                    <p style="color: var(--color-text-secondary); font-size: 0.9rem;">10 taps/sec | Activa</p>
+                    <div class="instance-stats">
+                        <div class="stat">
+                            <div class="stat-value">2,456</div>
+                            <div class="stat-label">Taps</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">600</div>
+                            <div class="stat-label">taps/min</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="instance-card" data-instance="CUENTA 2">
+                    <h3>📱 cuenta2</h3>
+                    <p style="color: var(--color-text-secondary); font-size: 0.9rem;">15 taps/sec | Activa</p>
+                    <div class="instance-stats">
+                        <div class="stat">
+                            <div class="stat-value">3,891</div>
+                            <div class="stat-label">Taps</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">900</div>
+                            <div class="stat-label">taps/min</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="instance-card" data-instance="CUENTA 3">
+                    <h3>📱 cuenta3</h3>
+                    <p style="color: var(--color-text-secondary); font-size: 0.9rem;">20 taps/sec | Activa</p>
+                    <div class="instance-stats">
+                        <div class="stat">
+                            <div class="stat-value">5,234</div>
+                            <div class="stat-label">Taps</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">1,200</div>
+                            <div class="stat-label">taps/min</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Installation -->
+        <section>
+            <h2>Instalación Rápida</h2>
+            <div class="code-block">
+<pre><code><span class="comment"># Clonar el repositorio</span>
+git clone https://github.com/statick88/tap-support.git
+cd tap-support
+
+<span class="comment"># Build</span>
+make build
+
+<span class="comment"># Ejecutar una instancia</span>
+./run-multi.sh usuario1
+
+<span class="comment"># Ejecutar múltiples instancias</span>
+./run-multi.sh -i cuenta1 -r 10 usuario1  <span class="comment"># Terminal 1</span>
+./run-multi.sh -i cuenta2 -r 15 usuario2  <span class="comment"># Terminal 2</span>
+./run-multi.sh -i cuenta3 -r 20 usuario3  <span class="comment"># Terminal 3</span></code></pre>
+            </div>
+        </section>
+
+        <!-- Controls -->
+        <section>
+            <h2>Controles</h2>
+            <div class="controls-table">
+                <div class="control-row">
+                    <kbd>Space</kbd>
+                    <span>Pausar/Reanudar auto-tapping</span>
+                </div>
+                <div class="control-row">
+                    <kbd>T</kbd>
+                    <span>Tap manual (cuando auto-tap está off)</span>
+                </div>
+                <div class="control-row">
+                    <kbd>S</kbd>
+                    <span>Iniciar/Detener sesión</span>
+                </div>
+                <div class="control-row">
+                    <kbd>R</kbd>
+                    <span>Reiniciar contador</span>
+                </div>
+                <div class="control-row">
+                    <kbd>U</kbd>
+                    <span>Cambiar username de TikTok</span>
+                </div>
+                <div class="control-row">
+                    <kbd>M</kbd>
+                    <span>Ver métricas de cuenta</span>
+                </div>
+                <div class="control-row">
+                    <kbd>H</kbd>
+                    <span>Ver historial de sesiones</span>
+                </div>
+                <div class="control-row">
+                    <kbd>Q</kbd>
+                    <span>Salir de la aplicación</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer CTA -->
+        <section class="footer-cta">
+            <h2>¿Listo para empezar?</h2>
+            <p>Contribuciones bienvenidas. Forkea el proyecto y crea tu PR.</p>
+            <div class="cta-group" style="justify-content: center;">
+                <a href="https://github.com/statick88/tap-support" class="btn btn-primary" target="_blank">
+                    ⭐ Dar estrella en GitHub
+                </a>
+                <a href="https://statick.dev" class="btn btn-secondary">
+                    ← Volver al portafolio
+                </a>
+            </div>
+        </section>
+    </div>
+
+    <footer class="footer-branding">
+        <p>Built by <a href="https://statick.dev" target="_blank">Statick</a> | <a href="https://github.com/statick88/tap-support" target="_blank">GitHub</a></p>
+    </footer>
+</body>
+</html>

@@ -43,3 +43,6 @@ analysis*.md
 # Releases (use GitHub Releases instead)
 releases/
 
+# PID files for multi-instance
+.pids/
+

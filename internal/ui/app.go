@@ -17,31 +17,33 @@ type model struct {
 
 // App represents the main application
 type App struct {
-	counter     *application.CounterService
-	metrics     *application.MetricsService
-	history     *application.HistoryService
-	view        string // "counter", "metrics", "history"
-	username    string
-	input       textinput.Model
-	autoTapping bool // Controla si el conteo automático está activo
+	counter      *application.CounterService
+	metrics      *application.MetricsService
+	history      *application.HistoryService
+	view         string // "counter", "metrics", "history"
+	username     string
+	input        textinput.Model
+	autoTapping  bool          // Controla si el conteo automático está activo
+	tickDuration time.Duration // Duration between auto-taps
 }
 
 // NewApp creates a new application
-func NewApp(counter *application.CounterService, metrics *application.MetricsService, history *application.HistoryService) *App {
+func NewApp(counter *application.CounterService, metrics *application.MetricsService, history *application.HistoryService, autoTap bool, defaultUsername string, tickDuration time.Duration) *App {
 	// Initialize text input
 	ti := textinput.New()
-	ti.Placeholder = "yazgardea"
+	ti.Placeholder = defaultUsername
 	ti.Focus()
 
 	// Create the app
 	app := &App{
-		counter:     counter,
-		metrics:     metrics,
-		history:     history,
-		view:        "counter",
-		input:       ti,
-		username:    "yazgardea", // Default username
-		autoTapping: true,        // Start in auto-tapping mode
+		counter:      counter,
+		metrics:      metrics,
+		history:      history,
+		view:         "counter",
+		input:        ti,
+		username:     defaultUsername,
+		autoTapping:  autoTap,
+		tickDuration: tickDuration,
 	}
 
 	// Start session automatically on startup
@@ -52,8 +54,8 @@ func NewApp(counter *application.CounterService, metrics *application.MetricsSer
 
 // Init initializes the application
 func (a *App) Init() tea.Cmd {
-	// Start auto-tapping ticker (1 tap per 100ms)
-	return tea.Tick(100*time.Millisecond, func(t time.Time) tea.Msg {
+	// Start auto-tapping ticker with configurable rate
+	return tea.Tick(a.tickDuration, func(t time.Time) tea.Msg {
 		return tapTickMsg{}
 	})
 }
@@ -72,7 +74,7 @@ func (a *App) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			a.counter.IncrementTap()
 		}
 		// Continue ticking
-		return a, tea.Tick(100*time.Millisecond, func(t time.Time) tea.Msg {
+		return a, tea.Tick(a.tickDuration, func(t time.Time) tea.Msg {
 			return tapTickMsg{}
 		})
 
@@ -205,7 +207,10 @@ func (a *App) View() string {
 func (a *App) counterView() string {
 	session := a.counter.GetCurrentSession()
 
-	header := views.AppStyles.Header.Render("TikTok Tap Counter")
+	// Calculate tap rate display based on tick duration
+	tapsPerSec := int(1.0 / a.tickDuration.Seconds())
+
+	header := views.AppStyles.Header.Render(fmt.Sprintf("TikTok Tap Counter (⚡ %d/s)", tapsPerSec))
 	help := views.AppStyles.Help.Render("\n[Space/t] Tap | [s] Start/Stop | [r] Reset | [u] User | [m] Metrics | [h] History | [q] Quit")
 
 	if session == nil || !session.IsActive() {
