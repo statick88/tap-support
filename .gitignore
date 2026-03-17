@@ -1,8 +1,9 @@
-# Binaries
-tap-support
-tap-support-auto
-tap-support-new
-tap_stress
+# Binaries (only in root or bin directory)
+/tap-support
+/tap-support-auto
+/tap-support-new
+/tap_stress
+/bin/*
 
 # Go
 *.exe
