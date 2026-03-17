@@ -39,3 +39,7 @@ results/
 *_metrics.sh
 analyze*.py
 analysis*.md
+
+# Releases (use GitHub Releases instead)
+releases/
+
